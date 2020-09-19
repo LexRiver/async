@@ -1,0 +1,27 @@
+{
+    "sideEffects": false,
+    "name": "@lexriver/async",
+    "version": "1.0.0",
+    "description": "",
+    "main": "out/index.js",
+    "types": "out/index.d.ts",
+    "scripts": {
+        "test": "jest",
+        "build": "tsc"
+    },
+    "keywords": ["async","wait","await","timeout","pause"],
+    "author": "LexRiver <LexRiver@gmail.com> (https://github.com/LexRiver/)",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/LexRiver/async.git"
+    },
+    "devDependencies": {
+        "@types/jest": "^24.9.1",
+        "@types/node": "^12.12.12",
+        "jest": "^24.9.0",
+        "ts-jest": "^24.2.0",
+        "typescript": "^3.8.3"
+    },
+    "dependencies": {}
+}
