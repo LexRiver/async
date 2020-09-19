@@ -37,7 +37,7 @@ __Parameters__
     * `maxMsToWait?: number` - maximum milliseconds to wait for all steps, default values is 30*1000 
 
 ```typescript
-// 
+// waiting for function checkResult() to return 42 for 1 second
 await Async.waitForFunctionToReturnTrueAsync(() => checkResult() === 42, {msStep: 100, maxMsToWait: 1000})
 ```
 
