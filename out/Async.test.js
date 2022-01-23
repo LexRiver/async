@@ -48,7 +48,7 @@ test('waitForFunctionToReturnTrue', function () { return __awaiter(void 0, void 
                     a = 1;
                     console.log('a=', a);
                 }, 500);
-                return [4 /*yield*/, Async_1.Async.waitForFunctionToReturnTrueAsync(function () { return a == 1; }, 100, 1000)];
+                return [4 /*yield*/, Async_1.Async.waitForFunctionToReturnTrueAsync(function () { return a === 1; }, 100, 1000)];
             case 1:
                 _a.sent();
                 console.log('a=', a);
@@ -58,7 +58,7 @@ test('waitForFunctionToReturnTrue', function () { return __awaiter(void 0, void 
     });
 }); });
 test('waitForFunctionToReturnTrue (2)', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var a, x_1;
+    var a;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -68,18 +68,33 @@ test('waitForFunctionToReturnTrue (2)', function () { return __awaiter(void 0, v
                     a = 1;
                     console.log('a=', a);
                 }, 1500);
-                _a.label = 1;
+                return [4 /*yield*/, expect(Async_1.Async.waitForFunctionToReturnTrueAsync(function () { return a === 1; }, 100, 1000)).rejects.toThrowError('waitForFunctionToReturnTrue failed after timeout 1000ms')];
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, Async_1.Async.waitForFunctionToReturnTrueAsync(function () { return a == 1; }, 100, 1000)];
+                _a.sent();
+                return [4 /*yield*/, Async_1.Async.waitMsAsync(2000)];
             case 2:
                 _a.sent();
-                return [3 /*break*/, 4];
-            case 3:
-                x_1 = _a.sent();
-                expect(x_1.message).toBe('waitForFunctionToReturnTrue failed after timeout 1000ms');
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [2 /*return*/];
+        }
+    });
+}); });
+test('small maxMsToWait', function () { return __awaiter(void 0, void 0, void 0, function () {
+    var a;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                a = 2;
+                setTimeout(function () {
+                    a = 1;
+                    console.log('a=', a);
+                }, 1000);
+                return [4 /*yield*/, expect(Async_1.Async.waitForFunctionToReturnTrueAsync(function () { return a === 1; }, 100, 10)).rejects.toThrow()];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, Async_1.Async.waitMsAsync(2000)];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
         }
     });
 }); });

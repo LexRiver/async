@@ -40,7 +40,7 @@ exports.Async = void 0;
 var Async;
 (function (Async) {
     /**
-     * wait for some milliseconds by setTimeout wrapped in Promise
+     * Wait for some milliseconds by setTimeout wrapped in Promise
      * @param millisecondsToWait
      */
     function waitMsAsync(millisecondsToWait) {
@@ -56,33 +56,35 @@ var Async;
     }
     Async.waitMsAsync = waitMsAsync;
     /**
-     * wait for function to return true or throw error
+     * Wait for function to return true or throw error
      * @param func - this function must return true
      * @param msStep - execute function every msStep milliseconds and check for result
      * @param maxMsToWait - maximum milliseconds to wait
      */
-    function waitForFunctionToReturnTrueAsync(func, msStep, maxMsToWait) {
+    function waitForFunctionToReturnTrueAsync(functionToReturnTrue, msStep, maxMsToWait) {
+        if (msStep === void 0) { msStep = 10; }
+        if (maxMsToWait === void 0) { maxMsToWait = 30 * 1000; }
         return __awaiter(this, void 0, void 0, function () {
             var maxSteps, currentStep;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (msStep <= 0)
-                            throw new Error("msStep=" + msStep + "<=0");
-                        if (maxMsToWait && maxMsToWait <= 0)
-                            throw new Error("maxMsToWait=" + maxMsToWait);
-                        maxSteps = 0;
+                            throw new Error("msStep=".concat(msStep, "<=0"));
+                        if (maxMsToWait <= 0)
+                            throw new Error("maxMsToWait=".concat(maxMsToWait));
+                        maxSteps = 1;
                         if (maxMsToWait && maxMsToWait > msStep)
                             maxSteps = maxMsToWait / msStep;
                         currentStep = 0;
                         _a.label = 1;
                     case 1:
                         if (!true) return [3 /*break*/, 3];
-                        if (func()) {
+                        if (functionToReturnTrue()) {
                             return [2 /*return*/];
                         }
-                        if (maxSteps > 0 && currentStep > maxSteps) {
-                            throw new Error("waitForFunctionToReturnTrue failed after timeout " + maxMsToWait + "ms");
+                        if (currentStep > maxSteps) {
+                            throw new Error("waitForFunctionToReturnTrue failed after timeout ".concat(maxMsToWait, "ms"));
                         }
                         return [4 /*yield*/, waitMsAsync(msStep)];
                     case 2:

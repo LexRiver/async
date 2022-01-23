@@ -4,7 +4,7 @@ export module Async {
      * @param millisecondsToWait 
      */
     export async function waitMsAsync(millisecondsToWait: number) {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             setTimeout(() => {
                 resolve()
             }, millisecondsToWait)
@@ -17,23 +17,20 @@ export module Async {
      * @param msStep - execute function every msStep milliseconds and check for result
      * @param maxMsToWait - maximum milliseconds to wait
      */
-    export async function waitForFunctionToReturnTrueAsync(functionToReturnTrue: () => boolean, p?:{msStep?: number, maxMsToWait?: number}) {
-        p = p ?? {}
-        p.msStep = p.msStep ?? 100
-        p.maxMsToWait = p.maxMsToWait ?? 30*1000
-        if (p.msStep <= 0) throw new Error(`msStep=${p.msStep}<=0`)
-        if (p.maxMsToWait && p.maxMsToWait <= 0) throw new Error(`maxMsToWait=${p.maxMsToWait}`)
+    export async function waitForFunctionToReturnTrueAsync(functionToReturnTrue: () => boolean, msStep: number = 10, maxMsToWait: number = 30*1000) {
+        if (msStep <= 0) throw new Error(`msStep=${msStep}<=0`)
+        if (maxMsToWait <= 0) throw new Error(`maxMsToWait=${maxMsToWait}`)
         let maxSteps: number = 1
-        if (p.maxMsToWait && p.maxMsToWait > p.msStep) maxSteps = p.maxMsToWait / p.msStep
+        if (maxMsToWait && maxMsToWait > msStep) maxSteps = maxMsToWait / msStep
         let currentStep = 0
         while (true) {
             if (functionToReturnTrue()) {
                 return
             }
             if (currentStep > maxSteps) {
-                throw new Error(`waitForFunctionToReturnTrue failed after timeout ${p.maxMsToWait}ms`)
+                throw new Error(`waitForFunctionToReturnTrue failed after timeout ${maxMsToWait}ms`)
             }
-            await waitMsAsync(p.msStep)
+            await waitMsAsync(msStep)
             currentStep++
         }
     }

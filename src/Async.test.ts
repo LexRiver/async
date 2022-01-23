@@ -7,7 +7,7 @@ test('waitForFunctionToReturnTrue', async ()=>{
         a = 1
         console.log('a=', a)
     }, 500)
-    await Async.waitForFunctionToReturnTrueAsync(()=>a===1, {msStep: 100, maxMsToWait: 1000})
+    await Async.waitForFunctionToReturnTrueAsync(()=>a===1,  100, 1000)
     console.log('a=', a)
     expect(a).toEqual(1)
 })
@@ -20,16 +20,10 @@ test('waitForFunctionToReturnTrue (2)', async ()=>{
         a = 1
         console.log('a=', a)
     }, 1500)
-    let error = undefined
-    let errorMessage = undefined
-    try {
-        await Async.waitForFunctionToReturnTrueAsync(()=> a===1, {msStep: 100, maxMsToWait: 1000 })
-    } catch(x){
-        error = x
-        errorMessage = x.message
-    }
-    expect(error).not.toBeUndefined()
-    expect(errorMessage).toBe('waitForFunctionToReturnTrue failed after timeout 1000ms')
+
+    await expect(Async.waitForFunctionToReturnTrueAsync(()=> a===1, 100, 1000 )).rejects.toThrowError('waitForFunctionToReturnTrue failed after timeout 1000ms')
+    await Async.waitMsAsync(2000)
+    
 })
 
 test('small maxMsToWait', async () => {
@@ -38,14 +32,9 @@ test('small maxMsToWait', async () => {
         a = 1
         console.log('a=', a)
     }, 1000)
-    let error = undefined
-    try {
-        await Async.waitForFunctionToReturnTrueAsync(() => a===1, {msStep:100, maxMsToWait: 10})
-    } catch(x){
-        error = x
-    }
-    expect(error).not.toBeUndefined()
 
-    //await expect(async () => await Async.waitForFunctionToReturnTrueAsync(() => a===1, {msStep:100, maxMsToWait: 10})).rejects.toThrowError()
+    await expect( Async.waitForFunctionToReturnTrueAsync(() => a===1, 100, 10)).rejects.toThrow()
+    await Async.waitMsAsync(2000)
+    
     
 })

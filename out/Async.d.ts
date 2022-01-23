@@ -1,14 +1,14 @@
 export declare module Async {
     /**
-     * wait for some milliseconds by setTimeout wrapped in Promise
+     * Wait for some milliseconds by setTimeout wrapped in Promise
      * @param millisecondsToWait
      */
-    function waitMsAsync(millisecondsToWait: number): Promise<unknown>;
+    function waitMsAsync(millisecondsToWait: number): Promise<void>;
     /**
-     * wait for function to return true or throw error
+     * Wait for function to return true or throw error
      * @param func - this function must return true
      * @param msStep - execute function every msStep milliseconds and check for result
      * @param maxMsToWait - maximum milliseconds to wait
      */
-    function waitForFunctionToReturnTrueAsync(func: () => boolean, msStep: number, maxMsToWait?: number): Promise<void>;
+    function waitForFunctionToReturnTrueAsync(functionToReturnTrue: () => boolean, msStep?: number, maxMsToWait?: number): Promise<void>;
 }
