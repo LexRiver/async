@@ -98,3 +98,19 @@ test('small maxMsToWait', function () { return __awaiter(void 0, void 0, void 0,
         }
     });
 }); });
+test('wait forever', function () { return __awaiter(void 0, void 0, void 0, function () {
+    var a;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                a = 2;
+                setTimeout(function () { return a = 1; }, 1000);
+                return [4 /*yield*/, Async_1.Async.waitForFunctionToReturnTrueAsync(function () { return a === 1; })];
+            case 1:
+                _a.sent();
+                a = 3;
+                expect(a).toEqual(3);
+                return [2 /*return*/];
+        }
+    });
+}); });

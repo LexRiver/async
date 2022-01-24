@@ -1,8 +1,8 @@
 {
     "sideEffects": false,
     "name": "@lexriver/async",
-    "version": "2.0.0",
-    "description": "Async methods",
+    "version": "2.1.0",
+    "description": "Async methods, lock",
     "main": "out/index.js",
     "types": "out/index.d.ts",
     "scripts": {

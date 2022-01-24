@@ -36,69 +36,69 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Async = void 0;
-var Async;
-(function (Async) {
-    /**
-     * Wait for some milliseconds by setTimeout wrapped in Promise
-     * @param millisecondsToWait
-     */
-    function waitMsAsync(millisecondsToWait) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve) {
-                        setTimeout(function () {
-                            resolve();
-                        }, millisecondsToWait);
-                    })];
-            });
-        });
+exports.Lock = void 0;
+var _1 = require(".");
+var Lock = /** @class */ (function () {
+    function Lock() {
+        this.isLocked = false;
     }
-    Async.waitMsAsync = waitMsAsync;
-    /**
-     * Wait for function to return true or throw error
-     * @param func - this function must return true
-     * @param msStep - execute function every msStep milliseconds and check for result
-     * @param maxMsToWait - maximum milliseconds to wait, 0 for wait forever
-     */
-    function waitForFunctionToReturnTrueAsync(functionToReturnTrue, msStep, maxMsToWait) {
+    Lock.prototype.waitForUnlockAndLockAsync = function (msStep, maxMsToWait) {
         if (msStep === void 0) { msStep = 50; }
         if (maxMsToWait === void 0) { maxMsToWait = 0; }
         return __awaiter(this, void 0, void 0, function () {
-            var maxSteps, currentStep;
+            var x_1;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (msStep <= 0)
-                            throw new Error("msStep=".concat(msStep, "<=0"));
-                        if (maxMsToWait < 0)
-                            throw new Error("maxMsToWait=".concat(maxMsToWait));
-                        maxSteps = 0;
-                        if (maxMsToWait) {
-                            maxSteps = maxMsToWait / msStep;
-                            if (maxSteps < 1) {
-                                maxSteps = 1;
-                            }
-                        }
-                        currentStep = 0;
+                        if (!this.isLocked) return [3 /*break*/, 4];
                         _a.label = 1;
                     case 1:
-                        if (!true) return [3 /*break*/, 3];
-                        if (functionToReturnTrue()) {
-                            return [2 /*return*/];
-                        }
-                        if (maxSteps > 0 && currentStep > maxSteps) {
-                            throw new Error("waitForFunctionToReturnTrue failed after timeout ".concat(maxMsToWait, "ms"));
-                        }
-                        return [4 /*yield*/, waitMsAsync(msStep)];
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, _1.Async.waitForFunctionToReturnTrueAsync(function () { return _this.isLocked === false; }, msStep, maxMsToWait)];
                     case 2:
                         _a.sent();
-                        currentStep++;
-                        return [3 /*break*/, 1];
-                    case 3: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 3:
+                        x_1 = _a.sent();
+                        throw new Error("Unable to unlock the lock. Timeout ".concat(maxMsToWait, " ms"));
+                    case 4:
+                        if (this.isLocked)
+                            throw new Error('unable to unlock');
+                        this.isLocked = true;
+                        return [2 /*return*/];
                 }
             });
         });
-    }
-    Async.waitForFunctionToReturnTrueAsync = waitForFunctionToReturnTrueAsync;
-})(Async = exports.Async || (exports.Async = {}));
+    };
+    Lock.prototype.unlockAsync = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (!this.isLocked)
+                    throw new Error('unlock failed, not locked');
+                this.isLocked = false;
+                return [2 /*return*/];
+            });
+        });
+    };
+    Lock.prototype.lockAndExecuteAsync = function (action) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.waitForUnlockAndLockAsync()];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, action()];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, this.unlockAsync()];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return Lock;
+}());
+exports.Lock = Lock;

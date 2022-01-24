@@ -35,6 +35,12 @@ test('small maxMsToWait', async () => {
 
     await expect( Async.waitForFunctionToReturnTrueAsync(() => a===1, 100, 10)).rejects.toThrow()
     await Async.waitMsAsync(2000)
-    
-    
+})
+
+test('wait forever', async () => {
+    let a = 2
+    setTimeout(() => a = 1, 1000)
+    await Async.waitForFunctionToReturnTrueAsync(() => a === 1)
+    a = 3
+    expect(a).toEqual(3)
 })
