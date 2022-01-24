@@ -22,7 +22,7 @@ export class Lock{
         this.isLocked = false
     }
 
-    public async lockAndExecuteAsync(action:()=>Promise<void>){
+    public async lockAndExecuteAsync(action:()=>Promise<void>|void){
         await this.waitForUnlockAndLockAsync()
         await action()
         await this.unlockAsync()
