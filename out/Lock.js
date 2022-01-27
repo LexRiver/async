@@ -81,11 +81,13 @@ var Lock = /** @class */ (function () {
             });
         });
     };
-    Lock.prototype.lockAndExecuteAsync = function (action) {
+    Lock.prototype.lockAndExecuteAsync = function (action, msStep, maxMsToWait) {
+        if (msStep === void 0) { msStep = 50; }
+        if (maxMsToWait === void 0) { maxMsToWait = 0; }
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.waitForUnlockAndLockAsync()];
+                    case 0: return [4 /*yield*/, this.waitForUnlockAndLockAsync(msStep, maxMsToWait)];
                     case 1:
                         _a.sent();
                         return [4 /*yield*/, action()];

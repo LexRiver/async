@@ -22,8 +22,8 @@ export class Lock{
         this.isLocked = false
     }
 
-    public async lockAndExecuteAsync(action:()=>Promise<void>|void){
-        await this.waitForUnlockAndLockAsync()
+    public async lockAndExecuteAsync(action:()=>Promise<void>|void, msStep:number = 50, maxMsToWait:number = 0){
+        await this.waitForUnlockAndLockAsync(msStep, maxMsToWait)
         await action()
         await this.unlockAsync()
     }
