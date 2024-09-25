@@ -1,9 +1,10 @@
 {
     "sideEffects": false,
     "name": "@lexriver/async",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "Async methods",
     "type": "module",
+    "exports": "./out/src/index.mjs",
     "scripts": {
         "test": "vitest",
         "build": "rimraf out && tsc"
