@@ -1,4 +1,5 @@
-import { Async } from "./Async"
+import { expect, test } from 'vitest'
+import { Async } from "./Async.mjs"
 
 test('waitForFunctionToReturnTrue', async ()=>{
     let a = 2

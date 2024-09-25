@@ -1,4 +1,4 @@
-import { Async } from "."
+import { Async } from "./Async.mjs"
 
 export class Lock{
     protected isLocked:boolean = false

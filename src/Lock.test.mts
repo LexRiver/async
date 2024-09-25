@@ -1,5 +1,6 @@
-import { Async } from "./Async"
-import { Lock } from "./Lock"
+import { expect, test } from 'vitest'
+import { Async } from "./Async.mjs"
+import { Lock } from "./Lock.mjs"
 
 let a = 1
 
