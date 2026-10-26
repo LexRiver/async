@@ -1,7 +1,7 @@
 {
     "sideEffects": false,
     "name": "@lexriver/async",
-    "version": "3.0.1",
+    "version": "3.0.2",
     "description": "Async methods",
     "type": "module",
     "exports": "./out/src/index.mjs",

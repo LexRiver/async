@@ -26,6 +26,20 @@ async function functionWithLock2Async(lock:Lock){
     console.log('(2) finish')
 }
 
+test('releases the lock when an action rejects', async () => {
+    const lock = new Lock()
+
+    await expect(lock.lockAndExecuteAsync(async () => {
+        throw new Error('temporary failure')
+    })).rejects.toThrow('temporary failure')
+
+    let executed = false
+    await lock.lockAndExecuteAsync(() => {
+        executed = true
+    })
+    expect(executed).toBe(true)
+})
+
 test('lock', async () => {
     const lock = new Lock()
 
