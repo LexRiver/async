@@ -1,5 +1,9 @@
-import { expect, test } from 'vitest'
+import { afterEach, expect, test, vi } from 'vitest'
 import { Async } from "./Async.mjs"
+
+afterEach(() => {
+    vi.useRealTimers()
+})
 
 test('waitForFunctionToReturnTrue', async ()=>{
     let a = 2
@@ -36,6 +40,32 @@ test('small maxMsToWait', async () => {
 
     await expect( Async.waitForFunctionToReturnTrueAsync(() => a===1, 100, 10)).rejects.toThrow()
     await Async.waitMsAsync(2000)
+})
+
+test('uses the timeout as an absolute deadline and bounds the final sleep', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(0)
+    const predicate = vi.fn(() => false)
+
+    const waiting = Async.waitForFunctionToReturnTrueAsync(predicate, 100, 10)
+    const rejection = expect(waiting).rejects.toThrowError('waitForFunctionToReturnTrue failed after timeout 10ms')
+
+    expect(predicate).toHaveBeenCalledTimes(1)
+    await vi.advanceTimersByTimeAsync(9)
+    expect(predicate).toHaveBeenCalledTimes(1)
+    await vi.advanceTimersByTimeAsync(1)
+    await rejection
+    expect(predicate).toHaveBeenCalledTimes(1)
+})
+
+test('does not accept a predicate that finishes at the deadline', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(0)
+
+    await expect(Async.waitForFunctionToReturnTrueAsync(() => {
+        vi.setSystemTime(10)
+        return true
+    }, 100, 10)).rejects.toThrowError('waitForFunctionToReturnTrue failed after timeout 10ms')
 })
 
 test('wait forever', async () => {

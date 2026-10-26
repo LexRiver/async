@@ -20,23 +20,32 @@ export module Async {
     export async function waitForFunctionToReturnTrueAsync(functionToReturnTrue: () => boolean, msStep: number = 50, maxMsToWait: number = 0) {
         if (msStep <= 0) throw new Error(`msStep=${msStep}<=0`)
         if (maxMsToWait < 0) throw new Error(`maxMsToWait=${maxMsToWait}`)
-        let maxSteps: number = 0
-        if (maxMsToWait) {
-            maxSteps = maxMsToWait / msStep
-            if(maxSteps<1){
-                maxSteps = 1
-            }
+
+        const deadline = maxMsToWait > 0 ? Date.now() + maxMsToWait : undefined
+        const throwTimeout = () => {
+            throw new Error(`waitForFunctionToReturnTrue failed after timeout ${maxMsToWait}ms`)
         }
-        let currentStep = 0
+
         while (true) {
+            if (deadline !== undefined && Date.now() >= deadline) {
+                throwTimeout()
+            }
+
             if (functionToReturnTrue()) {
+                if (deadline !== undefined && Date.now() >= deadline) {
+                    throwTimeout()
+                }
                 return
             }
-            if (maxSteps > 0 && currentStep > maxSteps) {
-                throw new Error(`waitForFunctionToReturnTrue failed after timeout ${maxMsToWait}ms`)
+
+            const millisecondsToWait = deadline === undefined
+                ? msStep
+                : Math.min(msStep, deadline - Date.now())
+
+            if (millisecondsToWait <= 0) {
+                throwTimeout()
             }
-            await waitMsAsync(msStep)
-            currentStep++
+            await waitMsAsync(millisecondsToWait)
         }
     }
 }
