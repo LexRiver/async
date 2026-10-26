@@ -47,6 +47,8 @@ await Async.waitForFunctionToReturnTrueAsync(() => getTheAnswer() === 42, 100, 1
 
 Use `Lock` to synchronize async functions flow. So one function will wait for other function to release the lock.
 
+A `Lock` is not reentrant. An action must not acquire the same lock again. Immediate nested acquisition is rejected with an error instead of waiting forever; because JavaScript has no portable async-call-context API, code that attempts the nested acquisition after an `await` should also set `maxMsToWait` as a safeguard. Independent callers continue to queue normally.
+
 ```typescript
 
 async function functionWithLock1Async(lock:Lock){

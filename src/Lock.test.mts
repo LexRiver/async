@@ -40,6 +40,42 @@ test('releases the lock when an action rejects', async () => {
     expect(executed).toBe(true)
 })
 
+test('fails fast when the action immediately acquires the same lock', async () => {
+    const lock = new Lock()
+
+    await expect(lock.lockAndExecuteAsync(async () => {
+        await lock.lockAndExecuteAsync(() => undefined)
+    })).rejects.toThrow('Cannot acquire the same Lock from within its action')
+
+    await expect(lock.lockAndExecuteAsync(() => undefined)).resolves.toBeUndefined()
+})
+
+test('preserves queueing for independent callers', async () => {
+    const lock = new Lock()
+    const order:string[] = []
+    let releaseFirst!:()=>void
+    let markFirstStarted!:()=>void
+    const firstCanFinish = new Promise<void>((resolve) => releaseFirst = resolve)
+    const firstStarted = new Promise<void>((resolve) => markFirstStarted = resolve)
+
+    const first = lock.lockAndExecuteAsync(async () => {
+        order.push('first started')
+        markFirstStarted()
+        await firstCanFinish
+        order.push('first finished')
+    })
+    await firstStarted
+
+    const second = lock.lockAndExecuteAsync(() => {
+        order.push('second started')
+    }, 1)
+    expect(order).toEqual(['first started'])
+
+    releaseFirst()
+    await Promise.all([first, second])
+    expect(order).toEqual(['first started', 'first finished', 'second started'])
+})
+
 test('lock', async () => {
     const lock = new Lock()
 
